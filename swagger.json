@@ -24,46 +24,135 @@
     "/users/": {
       "get": {
         "tags": ["Users"],
-        "description": "",
+        "description": "Get all users",
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Smith"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "john.smith@example.com"
+                  },
+                  "favoriteColor": {
+                    "type": "string",
+                    "example": "Blue"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1990-05-15"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "example": "+1 (555) 123-4567"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "123 Main Street, Apt 4B"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "New York"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
       "post": {
         "tags": ["Users"],
-        "description": "",
+        "description": "Create a new user",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
+              "required": ["firstName", "lastName", "email", "favoriteColor", "birthday", "phoneNumber", "address", "city"],
               "properties": {
                 "firstName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "John",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "description": "User's first name (2-50 characters, letters only)"
                 },
                 "lastName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Smith",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "description": "User's last name (2-50 characters, letters only)"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.smith@example.com",
+                  "description": "User's email address"
                 },
                 "favoriteColor": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Blue",
+                  "minLength": 3,
+                  "maxLength": 30,
+                  "description": "User's favorite color (3-30 characters)"
                 },
                 "birthday": {
-                  "example": "any"
+                  "type": "string",
+                  "format": "date",
+                  "example": "1990-05-15",
+                  "description": "User's birthday in YYYY-MM-DD format"
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "example": "+1 (555) 123-4567",
+                  "description": "User's phone number"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "123 Main Street, Apt 4B",
+                  "minLength": 5,
+                  "maxLength": 200,
+                  "description": "User's address (5-200 characters)"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "New York",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "description": "User's city (2-100 characters)"
                 }
               }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation error"
           },
           "500": {
             "description": "Internal Server Error"
@@ -74,60 +163,160 @@
     "/users/{id}": {
       "get": {
         "tags": ["Users"],
-        "description": "",
+        "description": "Get a single user by ID",
         "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "MongoDB ObjectId of the user"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "507f1f77bcf86cd799439011"
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "Smith"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john.smith@example.com"
+                },
+                "favoriteColor": {
+                  "type": "string",
+                  "example": "Blue"
+                },
+                "birthday": {
+                  "type": "string",
+                  "example": "1990-05-15"
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "example": "+1 (555) 123-4567"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "123 Main Street, Apt 4B"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "New York"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid ID format"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
       "put": {
         "tags": ["Users"],
-        "description": "",
+        "description": "Update an existing user",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "MongoDB ObjectId of the user"
           },
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
+              "required": ["firstName", "lastName", "email", "favoriteColor", "birthday", "phoneNumber", "address", "city"],
               "properties": {
                 "firstName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "John",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "description": "User's first name (2-50 characters, letters only)"
                 },
                 "lastName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Smith",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "description": "User's last name (2-50 characters, letters only)"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.smith.updated@example.com",
+                  "description": "User's email address"
                 },
                 "favoriteColor": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Navy Blue",
+                  "minLength": 3,
+                  "maxLength": 30,
+                  "description": "User's favorite color (3-30 characters)"
                 },
                 "birthday": {
-                  "example": "any"
+                  "type": "string",
+                  "format": "date",
+                  "example": "1990-05-15",
+                  "description": "User's birthday in YYYY-MM-DD format"
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "example": "+1 (555) 123-9999",
+                  "description": "User's phone number"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "123 Main Street, Apt 10C",
+                  "minLength": 5,
+                  "maxLength": 200,
+                  "description": "User's address (5-200 characters)"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Brooklyn",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "description": "User's city (2-100 characters)"
                 }
               }
             }
           }
         ],
         "responses": {
+          "200": {
+            "description": "No changes made to user"
+          },
           "204": {
-            "description": "No Content"
+            "description": "User updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation error"
+          },
+          "404": {
+            "description": "User not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -136,18 +325,25 @@
       },
       "delete": {
         "tags": ["Users"],
-        "description": "",
+        "description": "Delete a user by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "MongoDB ObjectId of the user"
           }
         ],
         "responses": {
           "204": {
-            "description": "No Content"
+            "description": "User deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid ID format"
+          },
+          "404": {
+            "description": "User not found"
           },
           "500": {
             "description": "Internal Server Error"
