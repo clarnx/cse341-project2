@@ -21,7 +21,7 @@
       }
     },
 
-    "/Users/": {
+    "/users/": {
       "get": {
         "tags": ["Users"],
         "description": "",
@@ -71,7 +71,7 @@
         }
       }
     },
-    "/Users/{id}": {
+    "/users/{id}": {
       "get": {
         "tags": ["Users"],
         "description": "",
