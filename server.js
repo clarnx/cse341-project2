@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongodb = require("./data/database");
 const passport = require("passport");
@@ -39,26 +41,30 @@ app
   .use(cors({ origin: "*" }))
   .use("/", routes);
 
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.CALLBACK_URL,
-    },
-    function (accessToken, refreshToken, profile, done) {
-      return done(null, profile);
-    }
-  )
-);
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+  passport.use(
+    new GitHubStrategy(
+      {
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL,
+      },
+      function (accessToken, refreshToken, profile, done) {
+        return done(null, profile);
+      }
+    )
+  );
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
+} else {
+  console.log("GitHub OAuth not configured. Skipping GitHub authentication setup.");
+}
 
 app.get("/", (req, res) => {
   res.send(
