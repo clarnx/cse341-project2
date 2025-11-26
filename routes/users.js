@@ -3,7 +3,7 @@ const router = express.Router();
 
 const userController = require("../controllers/userController");
 const { validate, userValidationRules } = require("../middleware/validation");
-const isAuthenticated = require("../middleware/authenticate");
+const { isAuthenticated } = require("../middleware/authenticate");
 
 router.get("/", userController.getAll);
 
