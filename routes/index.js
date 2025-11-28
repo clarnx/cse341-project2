@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const passport = require("passport");
 const users = require("./users");
+const contacts = require("./contacts");
 
 router.use("/", require("./swagger"));
 
@@ -10,6 +11,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/users", users);
+router.use("/contacts", contacts);
 
 router.get("/login", passport.authenticate("github"), (req, res) => {});
 
